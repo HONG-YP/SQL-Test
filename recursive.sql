@@ -1,0 +1,13 @@
+-- 0시부터 23시까지, 각 시간대별로 입양이 몇 건이나 발생했는지 조회하는 SQL문을 작성. 이때 결과는 시간대 순으로 정렬
+
+WITH RECURSIVE TEMP AS(
+    SELECT 0 AS HOUR # 초기값 설정
+    UNION ALL # 위, 아래 쿼리 값 연산
+    SELECT HOUR + 1 FROM TEMP # HOUR를 하나씩 증가시킴
+    WHERE HOUR < 23 # 반복 멈추는 조건
+    )
+SELECT TEMP.HOUR, COUNT(HOUR(ANIMAL_OUTS.DATETIME)) AS COUNT
+FROM TEMP
+LEFT JOIN ANIMAL_OUTS ON TEMP.HOUR = HOUR(ANIMAL_OUTS.DATETIME)
+GROUP BY TEMP.HOUR
+ORDER BY TEMP.HOUR ASC;
